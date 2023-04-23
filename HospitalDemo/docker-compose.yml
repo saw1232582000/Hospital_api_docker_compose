@@ -1,0 +1,41 @@
+version: "3.4"
+
+networks:
+  dev:
+    driver: bridge
+
+services:
+  hospital-app:
+    image: docker.io/library/hospital-dotnet-api
+    depends_on:
+      - "patient_database"
+    container_name: hospital-api
+    ports:
+      - "8088:80"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+      - DATABASE_URL=postgresql://postgres:sawwinthant@hospital_db:5432/hospital_api
+
+    networks:
+      - dev
+
+  patient_database:
+    image: postgres:latest
+    container_name: hospital_db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=sawwinthant
+      - POSTGRES_DB=hospital_api
+    restart: always
+    volumes:
+      - app_data:/var/lib/postgresql/data
+    networks:
+      - dev
+
+volumes:
+  app_data:

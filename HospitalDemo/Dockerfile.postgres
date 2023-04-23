@@ -1,0 +1,15 @@
+FROM postgres:latest
+
+ENV POSTGRES_USER postgres
+ENV POSTGRES_PASSWORD sawwinthant
+ENV POSTGRES_DB hospital_db
+
+# Copy backup file to container
+COPY hospital_backup.sql /docker-entrypoint-initdb.d/
+
+
+# Expose PostgreSQL port
+EXPOSE 5432
+
+# Set the command to start the Postgres database server
+CMD ["postgres"]
